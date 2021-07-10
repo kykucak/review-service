@@ -4,7 +4,7 @@ from .models import Shop
 
 
 class ShopsFilter(filters.FilterSet):
-    name = filters.CharFilter(field_name="name", lookup_expr="icontains")
+    name = filters.CharFilter(field_name="domain_name", lookup_expr="icontains")
 
     class Meta:
         model = Shop

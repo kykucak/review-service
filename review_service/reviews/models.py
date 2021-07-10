@@ -3,7 +3,7 @@ from django.db import models
 
 class Shop(models.Model):
     name = models.CharField(max_length=100)
-    slug = models.Model
+    domain_name = models.CharField(max_length=100)
     link = models.URLField()
 
     def __str__(self):
