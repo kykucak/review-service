@@ -1,20 +1,28 @@
 from django.db.models import Count, Avg
 from rest_framework import generics
 from rest_framework.viewsets import ModelViewSet
+from rest_framework.filters import OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 
 import tldextract
 
 from .models import Review, Shop
 from .serializers import ReviewSerializer, ShopSerializer
-from .filters import ShopsFilter
+from .filters import ShopsFilter, ReviewsFilter
 
 
 class ReviewViewSet(ModelViewSet):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
+    filter_backends = [DjangoFilterBackend, OrderingFilter]
+    filterset_class = ReviewsFilter
+    ordering_fields = []
+    ordering = ["-date_created"]
 
     def create(self, request, *args, **kwargs):
+        """
+        Changes "shop_link" in request.data to "shop_id" for correct creating a new review
+        """
         request.data["shop"] = 1
         self.is_review_body_valid(self.get_serializer(data=request.data))  # checks if body data is valid
 
@@ -24,6 +32,10 @@ class ReviewViewSet(ModelViewSet):
         return super().create(request, *args, **kwargs)
 
     def partial_update(self, request, *args, **kwargs):
+        """
+        Changes "shop_link" in request.data to "shop_id" for correct updating a review,
+        if "shop_link" is in a request.data
+        """
         self.is_review_body_valid(self.get_serializer(instance=self.get_object(), data=request.data, partial=True))
 
         if "shop_link" in request.data:
@@ -43,8 +55,7 @@ class ReviewViewSet(ModelViewSet):
         return shop.pk
 
     @staticmethod
-    def is_review_body_valid(serializer):
-        # serializer.data = data
+    def is_review_body_valid(serializer: ReviewSerializer):
         serializer.is_valid(raise_exception=True)
 
 
