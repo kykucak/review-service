@@ -135,7 +135,7 @@ class ReviewViewSetTest(TestCase):
         self.assertEqual(response.data[0].get("title"), "Review #3")
 
     def test_review_list_when_wrong_author_is_passed(self):
-        """Checks if empty list is returned when wrong author is passed"""
+        """Checks if empty list is returned, when wrong author is passed"""
         url = reverse("review-list")
         data = {
             "author": "someuser@email.com"
@@ -146,17 +146,75 @@ class ReviewViewSetTest(TestCase):
         self.assertEqual(len(response.data), 0)
 
     # ------------------------------------CREATE----------------------
+    # def test_creation_response_when_valid_data_is_passed(self):
+    #     """Checks if correct response is returned, when valid data is passed in the request body"""
+    #     url = reverse("review-list")
+    #     data = {
+    #         "title": "Foxtrot is cool!",
+    #         "content": "Lalalalalalalal",
+    #         "stars": 4,
+    #         "author_email": "test@email.com",
+    #         "shop_link": "https://www.foxtrot.com.ua/"
+    #     }
+    #     response = self.client.post(url, data)
+    #
+    #     self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+    #     self.assertEqual(response.data.get("title"), "Foxtrot is cool!")
+    #     self.assertIsNotNone(Review.objects.filter(title="Foxtrot is cool!").first())
+    #     # shop creation
+    #     self.assertIsNotNone(Shop.objects.filter(name="Foxtrot").first())
+    #
+    # def test_HTTP400_when_invalid_data_is_passed(self):
+    #     """Checks if 400 Bad Request is triggered, when invalid data is passed in the request body"""
+    #     url = reverse("review-list")
+    #     data = {
+    #         "title": "Foxtrot is cool!",
+    #         "content": "Lalalalalalalal",
+    #         "stars": 4,
+    #         "author_email": "test@.com",
+    #         "shop_link": "https://www.foxtrot.com.ua/"
+    #     }
+    #     response = self.client.post(url, data)
+    #
+    #     self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
+    # ------------------------------------PARTIAL UPDATE---------------------------
+    def test_update_response_when_valid_data_is_passed(self):
+        """Checks if correct response is returned, when valid data is passed in the request body"""
+        url = reverse("review-detail", args=[1])
+        data = {
+            "title": "something new"
+        }
+        response = self.client.patch(url, data, content_type="application/json")
 
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data.get("title"), "something new")
 
+    def test_HTTP400_when_invalid_data_is_passed(self):
+        """Checks if 400 Bad Request is triggered, when invalid data is passed in the request body"""
+        url = reverse("review-detail", args=[1])
+        data = {
+            "author_email": "wrongMail"
+        }
+        response = self.client.patch(url, data, content_type="application/json")
 
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
+    # ------------------------------------DELETE---------------------------
+    def test_deletion_response_when_correct_pk_is_passed(self):
+        """Checks if right response is back, when correct request is made"""
+        url = reverse("review-detail", args=[1])
+        response = self.client.delete(url)
 
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
+    def test_HTTP404_when_wrong_pk_is_passed(self):
+        """Checks if 404 Not Found is returned, when wrong pk is given in the url"""
+        url = reverse("review-detail", args=[100])
+        response = self.client.delete(url)
 
-
-
-
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        
 
 def create_test_shops_and_reviews():
     # Creating shops
