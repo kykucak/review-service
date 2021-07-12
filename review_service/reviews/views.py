@@ -20,9 +20,7 @@ class ReviewViewSet(ModelViewSet):
     ordering = ["-date_created"]
 
     def create(self, request, *args, **kwargs):
-        """
-        Changes "shop_link" in request.data to "shop_id" for correct creating a new review
-        """
+        """Changes "shop_link" in request.data to "shop_id" for correct creating a new review"""
         request.data["shop"] = 1
         self.is_review_body_valid(self.get_serializer(data=request.data))  # checks if body data is valid
 
@@ -46,6 +44,7 @@ class ReviewViewSet(ModelViewSet):
 
     @staticmethod
     def get_shop_pk(link: str):
+        """Gets or creates shop with domain_name provided in link and returns a shop's pk"""
         domain_name = tldextract.extract(link).domain
         shop, created = Shop.objects.get_or_create(name=domain_name.capitalize(), domain_name=domain_name)
         if created:
@@ -56,6 +55,7 @@ class ReviewViewSet(ModelViewSet):
 
     @staticmethod
     def is_review_body_valid(serializer: ReviewSerializer):
+        """Checks if passed serializer is valid, otherwise raises 400 Bad Request"""
         serializer.is_valid(raise_exception=True)
 
 
@@ -66,11 +66,15 @@ class ShopList(generics.ListAPIView):
     filterset_class = ShopsFilter
 
     def get_queryset(self):
+        """
+        Orders shops in passed order: amount of reviews or average rate,
+        if nothing was passed returns shops in a default order
+        """
         order = self.request.query_params.get("order", " ")
         way = "-" if order[0] == "-" else ""
         if order == "reviews" or order == "-reviews":
             ordered_shops = Shop.objects.annotate(num_reviews=Count("reviews")).order_by(f"{way}num_reviews")
-        elif order == "rate" or order == "-order":
+        elif order == "rate" or order == "-rate":
             ordered_shops = Shop.objects.annotate(avg_rate=Avg("reviews__stars")).order_by(f"{way}avg_rate")
         else:
             ordered_shops = Shop.objects.all()
