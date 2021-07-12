@@ -100,6 +100,52 @@ class ShopListTest(TestCase):
         self.assertEqual(response.data[1].get("name"), "Foxtrot")
 
 
+class ReviewViewSetTest(TestCase):
+
+    @classmethod
+    def setUpTestData(cls):
+        create_test_shops_and_reviews()
+
+    # -------------------------------------LIST---------------------------
+
+    def test_review_list_when_no_query_params(self):
+        """
+        Checks if review list is returned in right order(descending date_created) and has right length,
+        when no query params are passed
+        """
+        url = reverse("review-list")
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 8)
+
+    def test_review_list_when_author_is_passed(self):
+        """
+        Checks if review list with author_email equals to passed author is returned,
+        """
+        url = reverse("review-list")
+        data = {
+            "author": "user3@email.com"
+        }
+        response = self.client.get(url, data)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0].get("author_email"), "user3@email.com")
+        self.assertEqual(response.data[0].get("title"), "Review #3")
+
+    def test_review_list_when_wrong_author_is_passed(self):
+        """Checks if empty list is returned when wrong author is passed"""
+        url = reverse("review-list")
+        data = {
+            "author": "someuser@email.com"
+        }
+        response = self.client.get(url, data)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 0)
+
+    # ------------------------------------CREATE----------------------
 
 
 
