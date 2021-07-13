@@ -1,0 +1,235 @@
+{
+	"info": {
+		"_postman_id": "1febacc2-8c7a-4206-8ea4-5611157513aa",
+		"name": "Review Service",
+		"description": "# Introduction\nThat's a web service, where people can write a review to some online shop, providing: \n- Full ecommerce link \n- Review title\n- Review text\n- Stars count (from 1 to 5)\n- Reviews author email\n\n## Service functional\n- add review\n- update review\n- delete review\n- get shop list order by rating or review count\n- get group by user email reviews order by creating time \n- get one shop by domain name\n\n# Authentication \nThere's no authentication.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Reviews",
+			"item": [
+				{
+					"name": "Get All Reviews",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8000/api/reviews/",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"reviews",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get a Review By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8000/api/reviews/1/",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"reviews",
+								"1",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update a Review By Id",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"author_email\": \"normal@email.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8000/api/reviews/1/",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"reviews",
+								"1",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create a New Review",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Foxtrot is cool!\",\r\n    \"content\": \"Lalalalalalalal\",\r\n    \"stars\": 4,\r\n    \"author_email\": \"test@email.com\",\r\n    \"shop_link\": \"https://www.foxtrot.com.ua/\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8000/api/reviews/",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"reviews",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Reviews By User Email",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8000/api/reviews/?author=test@email.com",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"reviews",
+								""
+							],
+							"query": [
+								{
+									"key": "author",
+									"value": "test@email.com"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a Review By Id",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:8000/api/reviews/19/",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"reviews",
+								"19",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Shops",
+			"item": [
+				{
+					"name": "Get All Shops",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8000/api/shops/",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"shops",
+								""
+							],
+							"query": [
+								{
+									"key": "order",
+									"value": "reviews",
+									"disabled": true
+								},
+								{
+									"key": "order",
+									"value": "-reviews",
+									"disabled": true
+								},
+								{
+									"key": "order",
+									"value": "rate",
+									"disabled": true
+								},
+								{
+									"key": "order",
+									"value": "-rate",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Shops Filtered By Name",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8000/api/shops/?name=rozetka",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"shops",
+								""
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "rozetka"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

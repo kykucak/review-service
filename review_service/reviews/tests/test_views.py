@@ -214,7 +214,7 @@ class ReviewViewSetTest(TestCase):
         response = self.client.delete(url)
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-        
+
 
 def create_test_shops_and_reviews():
     # Creating shops
